@@ -6,10 +6,10 @@ export default function Layout() {
 
     return (
 
-        <Tabs screenOptions={{
-
+        <Tabs  screenOptions={{ 
             headerShown: false,
             tabBarLabelStyle: { color: 'white', fontSize: 13 },
+            
             tabBarStyle: {
                 backgroundColor: '#1E90FF',
                 paddingTop: 8, 
@@ -22,8 +22,10 @@ export default function Layout() {
 
 
             <Tabs.Screen
-                name='Perfil'
+        
+                name='Profile'
                 options={{
+                    
                     tabBarLabel: 'Perfil',
                     tabBarIcon: () => <MaterialCommunityIcons name="face-man-profile" size={24} color="white" />,
                 }} />

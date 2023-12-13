@@ -1,101 +1,59 @@
 import { Text, View, FlatList, SafeAreaView } from 'react-native'
 import Barra from '../../components/Barra/Barra'
 import styles from '../../styles/styleHome'
-const imagem = require('../../../assets/imgLogo.png');
-import { Card } from '@rneui/themed';
+import { Card, FAB } from '@rneui/themed';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { carrinho } from '../../util/carrinho';
-import { Item } from '../../util/item';
-const data = [
-    {
-        id: 0,
-        name: 'MasterBall',
-        description: 'The best Ball with the ultimate performance. It will catch any wild Pokémon without fail.',
-        value: 'R$ 9999,99',
-        imgPath: require('../../../assets/masterball.png')
-    },
-    {
-        id: 1,
-        name: 'MaxPotion',
-        value: 'R$ 3000,00',
-        description: 'Fully restores HP that have been lost in battle.',
-        imgPath: require('../../../assets/itens.png')
+import { useState, useEffect } from 'react';
+import httpService from '../../service/httpService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { iten } from '../../util/interfaces';
+import { router } from 'expo-router';
+import { ResponseLogin } from '../../util/interfacesResponse';
+import storageService from '../../service/storageService';
 
-    },
-    {
-        id: 2,
-        name: 'RockSmash',
-        description: 'A Fighting-type attack. In the field, it can be used to shatter rocks and open new paths.',
-        value: 'R$ 4500,00',
-        imgPath: require('../../../assets/rocksmash.png')
-    },
-    {
-        id: 3,
-        name: 'FireStone',
-        description: 'A Stone used for making certain kinds of Pokémon evolve.',
-        value: 'R$ 7000,00',
-        imgPath: require('../../../assets/firestone.png')
-    },
-    // {
-    //     id: 4,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // },
-    // {
-    //     id: 5,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // },
-    // {
-    //     id: 6,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // },
-    // {
-    //     id: 7,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // },
-    // {
-    //     id: 8,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // },
-    // {
-    //     id: 9,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // },
-    // {
-    //     id: 10,
-    //     name: 'FireStone',
-    //     value: 'R$ 700,00',
-    //     imgPath: require('../../../assets/firestone.png')
-    // }
-]
 export default function Home() {
-    const addCart = (item: Item) => {
-        const itemExists: boolean | undefined = carrinho.some((produto) => produto.id === item.id);
+    const [itens, setItens] = useState<iten[]>([]);
+    
 
-        if (itemExists === undefined) {
-            carrinho.push(item);
-            console.log('Array vazio');
-        } else if (!itemExists) {
-            carrinho.push(item);
-            console.log('aq 2');
-        } else {
-            console.log('Item já existe no carrinho');
-        }
+
+
+    const addIten = async (_id: any) => {
+        const user = await AsyncStorage.getItem("Authorization")
+        const response = await httpService.addCart(user, _id)
+
 
     }
+    const openChat = () => {
+
+        router.push('/Chat')
+    }
+
+    const addFavorites = async (_id: any) => {
+
+        const user = await AsyncStorage.getItem("Authorization")
+        const result = await httpService.favorites(user, _id);
+        const date = await result.json()
+        if (result.status === 200) {
+            alert("Adicionado com sucesso")
+        } else {
+            alert("Algum erro aconteceu")
+        }
 
 
+    };
+
+    useEffect(() => {
+        const fetchIten = async () => {
+
+            const user: any = await AsyncStorage.getItem('Authorization')
+            const response = await httpService.getHome(user);
+            const data = await response.json();
+            setItens(data);
+
+
+        }
+        fetchIten();
+    }, [])
 
     return (
 
@@ -103,26 +61,31 @@ export default function Home() {
 
             <Barra />
 
-            <FlatList data={data}
-                keyExtractor={item => item.id.toString()}
+            <FlatList data={itens}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => <Card containerStyle={styles.cardStyle}>
                     <Card.Title style={styles.titleCardStyle}> {item.name}</Card.Title>
                     <View style={styles.styleView}>
-                        <Card.Image source={item.imgPath} style={styles.conteudoImg} />
-                        <Text style={styles.textCard}> Price {item.value}</Text>
-
-                        <TouchableOpacity onPress={() => addCart(item)} style={styles.button}>
+                        <Card.Image source={{ uri: item.imgPath }} style={styles.conteudoImg} />
+                        <Text style={styles.textCard}> Price {item.price}</Text>
+                        <TouchableOpacity style={{ alignSelf: 'center', marginBottom: 12, marginLeft: 15 }} onPress={() => addFavorites(item._id)}>
+                            <Text style={{ color: 'red' }}>❤️ </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { addIten({ _id: item._id }) }} style={styles.button}>
                             <Text style={{ color: 'black' }}> Buy </Text>
                         </TouchableOpacity>
-
-
-
                     </View>
                     <Card.Divider color='#ffff' />
                     <Text>{item.description} </Text>
 
 
                 </Card>} />
+            <FAB style={styles.fab}
+                visible={true}
+                icon={{ name: 'chat', color: 'white' }}
+                color='red'
+                onPress={() => openChat()} />
+
 
         </SafeAreaView >
     )

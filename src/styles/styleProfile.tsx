@@ -13,6 +13,13 @@ const styles = StyleSheet.create({
         width: 200,
         alignSelf: 'center',
     },
+    imgPerfil: {
+        borderRadius: 90,
+        height: 150,
+        width: 150,
+        marginBottom: 30
+    },
+
     containerCont: {
         marginTop: 100,
         height: 400,
@@ -47,6 +54,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
+        marginRight: 20
 
     },
     texto: {

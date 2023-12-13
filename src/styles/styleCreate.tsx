@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
+        alignSelf:'center'
 
     },
     text: {
@@ -59,6 +60,7 @@ const styles = StyleSheet.create({
     textBack: {
         marginTop: 20,
         color: '#c3d4e4',
+        alignSelf:'center'
 
     },
     ImgPkeball: {

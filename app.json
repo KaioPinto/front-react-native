@@ -25,9 +25,19 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "experiments":{"typedRoutes": true},
+    "experiments": {
+      "typedRoutes": true
+    },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que PokeMart acesse suas fotos para compartilhá-las com seus amigos.",
+          "cameraPermission": "Permitir que PokeMart acesse sua câmera.",
+          "microphonePermission": "Permitir que PokeMart acesse seu microfone."
+        }
+      ]
     ],
     "scheme": "AwesomeProject"
   }

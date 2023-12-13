@@ -38,6 +38,12 @@ const styles = StyleSheet.create({
     },
     styleView: {
         flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start'
+    },
+    fab:{
+        position: 'absolute',
+        right: 30,
+        bottom: 30
+
     }
 
 })
